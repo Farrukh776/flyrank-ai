@@ -1,0 +1,8 @@
+{
+  "base_rate": 0.3767,
+  "precision_at_20_grouped": 0.55,
+  "precision_at_50_grouped": 0.66,
+  "ga4_availability_pct": 4.2,
+  "month": "2026-03",
+  "n_rows": 176738
+}
