@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Content Age Doesn't Predict Decline — A Refresh-Priority Study on 79M Rows of Search Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --ink: #1B1F23;
+    --muted: #5B5F63;
+    --accent: #2C6E63;
+    --hairline: #DDD9D0;
+    --stripe: #F1EFE9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+  h1 {
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 18px 0 6px;
+  }
+  .subtitle {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+  .byline {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    padding: 14px 0;
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  .byline strong { color: var(--ink); font-weight: 500; }
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 56px 0 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2 .num {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 20px;
+  }
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 16px; font-size: 1.02rem; }
+  .lede {
+    font-size: 1.12rem;
+    color: var(--ink);
+  }
+  a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent); }
+  .callout {
+    background: var(--stripe);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 0.97rem;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 8px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  th {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-transform: none;
+  }
+  tr:nth-child(even) td { background: var(--stripe); }
+  .caption {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 6px 0 28px;
+  }
+  img { max-width: 100%; border: 1px solid var(--hairline); border-radius: 2px; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  code {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--stripe);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.88em;
+  }
+  .contents {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.92rem;
+    background: var(--stripe);
+    padding: 18px 22px;
+    margin: 32px 0 48px;
+  }
+  .contents-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .contents ol { margin: 0; padding-left: 18px; }
+  .contents li { margin-bottom: 4px; }
+  .contents a { text-decoration: none; }
+  footer {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .verdict {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85em;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .v-confirmed { background: #E4EFE9; color: #2C6E63; }
+  .v-mixed { background: #F3E9D8; color: #92672B; }
+  @media (max-width: 480px) {
+    h1 { font-size: 1.6rem; }
+    .wrap { padding: 40px 18px 64px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta">FlyRank AI — ML Internship Capstone · Lane 2: Refresh / Content Opportunity Scoring</div>
+  <h1>Why Content Age Doesn't Predict Decline — and What Does</h1>
+  <div class="subtitle">A refresh-priority study on 331K content items from a 79-million-row search production dataset</div>
+
+  <div class="byline">
+    <span><strong>Author:</strong> Farrukh Imran</span>
+    <span><strong>Date:</strong> September 12, 2026</span>
+    <span><strong>Repo:</strong> <a href="https://github.com/Farrukh776/flyrank-ai">github.com/Farrukh776/flyrank-ai</a></span>
+  </div>
+
+  <h2><span class="num">00</span>Abstract</h2>
+  <p class="lede">
+    Which pages should a content team review first when deciding what to refresh? I tested the common assumption
+    that older content is more likely to be declining, using March 2026 data from FlyRank's production search
+    warehouse (331,437 content items, aggregated from 9.8 million daily rows). A signal audit showed the
+    relationship between content age and decline is not the simple upward line the assumption predicts — it's
+    U-shaped, and a hand-written rule built on that assumption scored precision@50 of 0.10, worse than the 0.38
+    base rate. A Random Forest trained on the same honest features, evaluated on a client-grouped holdout split,
+    reached precision@50 of approximately 0.62 (observed 0.62–0.68 across repeated runs) — meaningfully above
+    chance and the rule — by capturing that non-linear age pattern rather than assuming it away. This report documents the audit, the model, the validation checks
+    that ruled out data leakage, and a ranked action playbook a content editor could use tomorrow.
+  </p>
+
+  <div class="contents">
+    <div class="contents-title">Contents</div>
+    <ol>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#method">Methodology</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#limitations">Limitations &amp; honest framing</a></li>
+      <li><a href="#recommendations">Ranked recommendations</a></li>
+      <li><a href="#reproducibility">Reproducibility</a></li>
+      <li><a href="#ack">Acknowledgments &amp; data credit</a></li>
+    </ol>
+  </div>
+
+  <h2 id="intro"><span class="num">01</span>Introduction</h2>
+  <p>
+    A content team with hundreds of thousands of pages can't manually review all of them for decline. Someone —
+    or something — has to decide which pages go on this week's review list. FlyRank's product already computes
+    a rule-based priority score for this; the question I set out to answer was narrower and more mechanical:
+    <strong>does a simple, explainable rule actually identify the pages most likely to be declining, or does it
+    just look like it does?</strong>
+  </p>
+  <p>
+    The decision this supports is concrete: an editor with limited time picks pages off a ranked list and
+    reviews or rewrites them. Getting it wrong has a real cost in both directions — a false positive wastes
+    editor hours on a page that wasn't actually a priority; a false negative lets a genuinely declining page
+    keep losing traffic, unnoticed, for another month. That asymmetry is why I evaluated everything on
+    <strong>precision@K</strong> rather than plain accuracy: what matters is whether the top of the list is
+    right, not whether every row in the dataset is classified correctly.
+  </p>
+
+  <h2 id="data"><span class="num">02</span>Data</h2>
+  <p>
+    This analysis uses the <code>fact_content_daily_performance</code> and <code>dim_content</code> tables from
+    the FlyRank ML Internship warehouse (Hugging Face-hosted, Parquet, partitioned by month). I worked from the
+    <strong>March 2026</strong> partition — a mid-panel month, deliberately not the dataset's final month, which
+    is reserved as a sealed evaluation slice and was never touched during model development.
+  </p>
+  <p>
+    The March partition contains 9,841,378 daily content-performance rows, one row per content item per client
+    per day. I aggregated these to one row per content item for the month, joined against
+    <code>dim_content</code> for static metadata (creation date, word count, search volume, competition),
+    producing <strong>331,437 unique content items</strong> for the initial signal audit and baseline. The
+    downstream modeling sample narrows to <strong>176,738 items</strong> after dropping rows with an undefined
+    click-through rate (zero impressions) — a filtering decision discussed candidly in Limitations, since it is
+    not neutral.
+  </p>
+  <p>Deliberately excluded, and why:</p>
+  <ul>
+    <li><strong>Product-computed decision flags</strong> (<code>health_score</code>, <code>priority_score</code>,
+    <code>action_type</code>) — not shipped in this dataset, and treated as a benchmark to beat, never as a
+    feature or label.</li>
+    <li><strong><code>last_optimized_date</code></strong> — initially considered as a staleness signal, but a
+    distribution check showed every value in the March slice fell <em>after</em> March 31, 2026 (a snapshot
+    artifact of the underlying dimension table, not a point-in-time value). Using it would have leaked future
+    optimization activity into a March-only feature set, so it was dropped.</li>
+    <li><strong>GA4 engagement fields for rows where <code>ga4_data_available</code> is false</strong> — only
+    4.2% of March rows had active GA4 tracking; using engagement features without this filter would silently
+    treat "not yet tracked" as "zero engagement."</li>
+  </ul>
+  <p>
+    No client names, URLs, or raw search queries appear anywhere in this analysis — all client and content
+    identifiers are pseudonymous hashes, used only for joining and for grouping the validation split, never as
+    model features.
+  </p>
+
+  <h2 id="method"><span class="num">03</span>Methodology</h2>
+
+  <h3>Label</h3>
+  <p>
+    The target is a <strong>within-month decline proxy</strong>: a content item is labeled <code>declined = 1</code>
+    if its total impressions fell from the first half of March (1st–15th) to the second half (16th–31st). This
+    is explicitly a proxy, not an observed future outcome — it's a same-window comparison, not a
+    past-features-predict-future-window design. I'm naming that limitation directly rather than letting the
+    label pass as ground truth.
+  </p>
+
+  <h3>Signal audit, before building anything</h3>
+  <p>
+    Before encoding a rule, I checked two signals a rule would plausibly lean on, each tied to a real FlyRank
+    product flag:
+  </p>
+  <table>
+    <tr><th>Signal</th><th>Behind flag</th><th>n</th><th>Finding</th><th>Verdict</th></tr>
+    <tr><td>Content age (new / aging / old)</td><td><em>refresh flags</em></td><td>331,437</td>
+        <td>Decline rate 26.2% (&lt;180d) → 15.6% (180–365d) → 23.4% (365d+) — U-shaped, not monotonic</td>
+        <td><span class="verdict v-mixed">MIXED / OPPOSITE</span></td></tr>
+    <tr><td>Position tier vs. CTR</td><td><em>needs_ctr_fix</em></td><td>176,738</td>
+        <td>CTR falls monotonically: 1.17% (pos 1–3) → 0.49% (4–10) → 0.33% (11–20) → 0.20% (21+), a ~6× drop</td>
+        <td><span class="verdict v-confirmed">CONFIRMED</span></td></tr>
+  </table>
+  <p class="caption">Table 1. Signal audit on March 2026 data. A clearly-explained negative — age not behaving
+  monotonically — is treated here as a real finding, not a failed check.</p>
+
+  <h3>Baseline</h3>
+  <p>
+    The baseline rule flags a page if it is <strong>old</strong> (content age ≥ 365 days) <strong>and</strong>
+    still <strong>visible</strong> (≥ 500 impressions in March), scored by impressions. This mirrors the shape of
+    FlyRank's own hand-tuned SQL flags. Given the age signal was already found to be non-monotonic, I expected —
+    and built the rule anyway, transparently — that this would perform poorly; that expectation is tested
+    directly in Results.
+  </p>
+
+  <h3>Model &amp; features</h3>
+  <p>
+    I trained Logistic Regression (as a readable reference point) and a Random Forest (300 trees, max depth 8,
+    class-weight balanced) on seven features: <code>impressions_month</code>, <code>avg_position</code>,
+    <code>ctr</code>, <code>content_age_days</code>, <code>word_count</code>, <code>search_volume</code>,
+    <code>competition</code>. <code>avg_position</code> is impressions-weighted (sum of daily position sums
+    divided by sum of impressions), not a naive average of daily averages, so low-impression days don't count
+    equally with high-impression days.
+  </p>
+
+  <h3>Validation design</h3>
+  <p>
+    The evaluation split is <strong>grouped by client</strong> (<code>client_hash_id</code>), not random rows.
+    Pages from the same client share site-wide traits — design, niche, backlink profile — so a random split lets
+    the model see some of a client's pages in training and others in test, silently leaking client identity as
+    signal. I confirmed this mattered directly: the identical Random Forest scored <strong>0.85 / 0.86</strong>
+    (precision@20 / @50) under a random split versus <strong>0.55 / 0.62–0.68</strong> under the grouped split —
+    a 20–30 point gap that quantifies how much of the "naive" score was memorization rather than a transferable
+    pattern. The grouped range is the one reported as the model's real performance throughout this paper.
+  </p>
+
+  <h3>Leakage checks</h3>
+  <p>
+    Two checks, beyond the label-vs-feature review above:
+  </p>
+  <ol>
+    <li><strong>Deliberate leak demonstration.</strong> On a separate exercise using the same March data, adding
+    the exact column the decline label was computed from (the half-over-half percent change itself) as a feature
+    moved AUC from an honest 0.557 to 0.9997 — a controlled demonstration of what leakage looks like, and a
+    reminder to check for it in the real feature set.</li>
+    <li><strong>With/without test on the top feature.</strong> <code>content_age_days</code> was the model's
+    top feature by permutation importance (0.091, more than double the next-ranked feature). Removing it from
+    training did not collapse precision@50 toward the base rate — it held steady in the same range as with the
+    feature included. If it were a disguised leak, removing it should have collapsed the score toward the 0.40
+    base rate. It didn't, which is evidence the feature carries a genuine, if modest, non-linear signal rather
+    than encoding the label.</li>
+  </ol>
+
+  <h2 id="results"><span class="num">04</span>Results</h2>
+  <table>
+    <tr><th>Method</th><th>Precision@20</th><th>Precision@50</th></tr>
+    <tr><td>Base rate (random)</td><td>0.40</td><td>0.40</td></tr>
+    <tr><td>Majority-class dummy</td><td>0.15</td><td>0.34</td></tr>
+    <tr><td>Baseline rule (age + visibility)</td><td>0.05</td><td>0.10</td></tr>
+    <tr><td>Logistic Regression</td><td>0.45</td><td>0.44</td></tr>
+    <tr><td><strong>Random Forest</strong></td><td><strong>0.55</strong></td><td><strong>0.62</strong></td></tr>
+  </table>
+  <p class="caption">Table 2. All methods evaluated on the same client-grouped 20% holdout, same
+  <code>declined</code> label, same metric. This table reflects a rerun reproduced identically twice; see the
+  run-to-run variance note below. The "base rate (random)" row (0.40) is computed on this specific held-out
+  fold; the full 176,738-item population's decline rate is 0.38 (recorded in <code>work/outputs/w07_metrics.json</code>) —
+  the two are close, which is a small reassurance that this particular grouped split isn't badly unrepresentative.</p>
+  <div class="callout">
+    <p><strong>A methodological note on reproducibility.</strong> Across repeated runs of this same notebook
+    (identical code, identical fixed random seed), Random Forest precision@50 varied between 0.62 and 0.68, and
+    the majority-class dummy baseline varied between 0.20 and 0.34. The model's random seed is fixed, so this
+    isn't model non-determinism — it traces to which specific clients land in the 20% held-out group each run,
+    which depends on the row order returned by the remote data source at query time. The qualitative finding is
+    stable across every run observed (Random Forest meaningfully beats the base rate and the baseline rule); the
+    exact decimal is not. I'm disclosing the range rather than reporting only the most favorable run.</p>
+  </div>
+
+  <p>
+    The baseline rule scoring <em>below random chance</em> is not a bug — it's the direct, predictable
+    consequence of Table 1: the rule selects old+visible pages on the assumption that older means more likely to
+    decline, but the audit showed the opposite skew in the "old" bucket. A rule built on a disproven monotonic
+    assumption performing below chance is the expected outcome of taking that assumption seriously enough to
+    test it.
+  </p>
+  <p>
+    Logistic Regression barely clears the base rate, consistent with a linear model's inability to represent a
+    U-shaped relationship. Random Forest is the clear result: <strong>precision@50 in the 0.62–0.68 range</strong>
+    across repeated runs, against a 0.40 base rate — it captures the non-monotonic age pattern a single-threshold
+    rule and a linear model both miss.
+  </p>
+
+  <h3>Where the model is wrong</h3>
+  <p>
+    The three highest-confidence false positives (model score ≈ 0.67, but not actually declining) all shared
+    the same profile: <code>impressions_month = 1.0</code> and <code>content_age_days = 46</code>. With a single
+    impression for the whole month, the within-month decline label is effectively decided by which half of the
+    month that one impression happened to land in — closer to a coin flip than a real trend. This points to a
+    genuine label-quality limit on very-low-traffic young content, not a model failure.
+  </p>
+  <img src="https://raw.githubusercontent.com/Farrukh776/flyrank-ai/main/work/figures/action_counts.png" alt="Bar chart of content actions by type from the Week 7 action playbook">
+  <p class="caption">Figure 1. Distribution of recommended actions across the 176,738-item modeling sample
+  (see Section 6).</p>
+
+  <h2 id="limitations"><span class="num">05</span>Limitations &amp; honest framing</h2>
+  <ul>
+    <li><strong>The label is a proxy, not a future outcome.</strong> "Declined" compares two halves of the same
+    month, not a past-window prediction of a genuinely future window. A stronger design — prior 90 days of
+    features predicting decline over the next 30 — was outside this project's scope but is the natural next
+    step.</li>
+    <li><strong>One month, one lane.</strong> All results are drawn from March 2026 only. Client history depth
+    varies widely across FlyRank's portfolio; this slice isn't representative of clients with short or missing
+    history, and seasonality is untested.</li>
+    <li><strong>The modeling sample is smaller than the audited population, non-randomly.</strong> The 331,437-item
+    signal audit narrows to 176,738 modeled items after dropping rows with undefined CTR (zero impressions).
+    Those dropped rows are disproportionately low-visibility content — the model's results should not be read as
+    covering FlyRank's full content catalog.</li>
+    <li><strong>GA4 engagement data is available for only 4.2% of March rows</strong>, so engagement-based
+    features were excluded from modeling entirely rather than risk treating "not tracked" as "zero engagement."</li>
+    <li><strong>This is not a claim about Google's ranking algorithm.</strong> Every finding here describes
+    patterns observed in one portfolio's own performance data, not a model of how search engines rank pages.</li>
+    <li><strong>Precision@50 of ~0.62–0.68 means roughly one in three flagged pages in the top 50 is not actually
+    declining</strong> under this proxy label — a real improvement over the baseline, not a solved problem.</li>
+    <li><strong>The exact metric varies slightly by run</strong>, even with a fixed random seed, because which
+    specific clients land in the 20% held-out group can shift with the remote data source's row order. The
+    qualitative result (Random Forest beats the base rate and the baseline rule) was stable across every run
+    observed; the second decimal place should not be treated as fixed.</li>
+  </ul>
+
+  <h2 id="recommendations"><span class="num">06</span>Ranked recommendations</h2>
+  <p>
+    Combining the confirmed CTR-position signal, the baseline's visibility gate, and the model's score produces
+    three action categories:
+  </p>
+  <table>
+    <tr><th>Archetype</th><th>Reason code</th><th>Action</th><th>Share of sample</th></tr>
+    <tr><td>Ranks well, low CTR</td><td><code>ranks_ok_but_low_ctr</code></td><td>Fix snippet / title</td><td>104,091 (58.9%)</td></tr>
+    <tr><td>Model-flagged high risk</td><td><code>model_flagged_high_risk</code></td><td>Review for refresh</td><td rowspan="2">5,448 (3.1%)</td></tr>
+    <tr><td>Old + still visible</td><td><code>old_but_visible</code></td><td>Review for refresh</td></tr>
+    <tr><td>No confirmed signal</td><td><code>monitor</code></td><td>No action</td><td>67,199 (38.0%)</td></tr>
+  </table>
+  <p class="caption">Table 3. Action breakdown on the 176,738-item March 2026 sample.</p>
+  <p>
+    One pattern in the top of the review-for-refresh queue is worth a human's attention before acting on it: the
+    highest-confidence rows cluster at exactly two content-age values (166 and 230 days), all with poor average
+    position (33–52) and near-zero CTR — consistent with a single batch-published content cohort rather than
+    independent pages. I flag this as an open observation, not an explained one; a reviewer should check
+    whether these pages share a template, topic cluster, or launch campaign before batch-actioning them.
+  </p>
+  <p>
+    A separate internal analysis of refresh timing (Age-Freshness Matrix) found that older content which gets
+    refreshed performs nearly as well as young, fresh content — suggesting refresh <em>timing</em>, not age
+    alone, is the more actionable lever, consistent with this study's own finding that age alone is a weak,
+    non-monotonic signal.
+  </p>
+
+  <h2 id="reproducibility"><span class="num">07</span>Reproducibility</h2>
+  <p>
+    Every number in this report traces to a notebook in the linked repository, run against the FlyRank ML
+    Internship warehouse (Hugging Face, gated access, free approval). Random seeds are fixed
+    (<code>random_state=42</code>) throughout model training and splitting.
+  </p>
+  <ul>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/w03_data_contract.ipynb">w03 — Data contract &amp; leakage trap demo</a></li>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/w04_baseline_score.ipynb">w04 — Signal audit &amp; baseline rule</a></li>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/w05_model.ipynb">w05 — Model training &amp; comparison</a></li>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/w06_validation_audit.ipynb">w06 — Validation audit (grouped vs. random split, leakage re-check)</a></li>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/w07_action_playbook.ipynb">w07 — Action playbook &amp; exports</a></li>
+    <li><a href="https://github.com/Farrukh776/flyrank-ai/blob/main/work/notebooks/capstone.ipynb">Capstone — this paper's source notebook</a></li>
+  </ul>
+  <p>
+    To rerun: clone <a href="https://github.com/Farrukh776/flyrank-ai">the repository</a>, request access to
+    the <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">FlyRank/internship-warehouse</a>
+    dataset on Hugging Face, and open any notebook in Colab via its badge link.
+  </p>
+
+  <h2 id="ack"><span class="num">08</span>Acknowledgments &amp; data credit</h2>
+  <p>
+    Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai">flyrank.ai</a>.
+  </p>
+
+  <footer>
+    This report is a training exercise conducted on anonymized, pseudonymized production-derived search data.
+    All findings are directional and decision-support in nature, observed on one portfolio and one time window
+    — not causal claims, and not a model of any search engine's ranking algorithm.
+  </footer>
+
+</div>
+</body>
+</html>
